@@ -74,8 +74,8 @@
 		<x_max>1000</x_max>
 		<y_min>-500</y_min>
 		<y_max>500</y_max>
-		<z_min>-50</z_min>
-		<z_max>50</z_max>
+		<z_min>-20</z_min>
+		<z_max>20</z_max>
 		<dx>20</dx>
 		<dy>20</dy>
 		<dz>20</dz>
@@ -83,7 +83,7 @@
 	</domain>
 	
 	<overall>
-		<max_time units="min">3000</max_time> <!-- 5 days * 24 h * 60 min 20160-->
+		<max_time units="min">7800</max_time> <!-- 5 days * 24 h * 60 min 20160-->
 		<time_units>min</time_units>
 		<space_units>micron</space_units>	
 		
@@ -142,7 +142,7 @@
         <Max_Xvalue type="double" units="micron" description="max value of x on tumor initial">500.0</Max_Xvalue>
         <initial_tumor_rad type="double" units="micron" description="initial tumor radius">30000.0</initial_tumor_rad>
         <hypoxia_pers_time type="double" units="min" description="phenotype persistent time of GFP+ cells">3000.0</hypoxia_pers_time>
-		<fraction_rsp type="double" units="dimensionless" description="fraction of GFP+ cells with different migration bias (bias_green_rsp)">0.3</fraction_rsp>
+		<fraction_rsp type="double" units="dimensionless" description="fraction of GFP+ cells with different migration bias (bias_green_rsp)">0.5</fraction_rsp>
         <bias_green_rsp type="double" units="dimensionless" description="migration bias for GFP + cells (for fraction_rsp)">0.5</bias_green_rsp>
         <hypoxyprobe type="bool" description="mark with hypoxyprobe">true</hypoxyprobe>
 		<speed_red type="double" units="micron/min" description="migration speed for DsRed+ cells">0.2938</speed_red>

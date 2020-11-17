@@ -391,7 +391,12 @@ std::vector<std::string> AMIGOS_coloring_function( Cell* pCell )
     static int oxygen_i = get_default_microenvironment()->find_density_index( "oxygen" ); 
     double pO2;
     if ( pCell->position[0] < default_microenvironment_options.X_range[0] || pCell->position[0] > default_microenvironment_options.X_range[1] || pCell->position[1] < default_microenvironment_options.Y_range[0] || pCell->position[1] > default_microenvironment_options.Y_range[1] ){ // outside of domain or in boundary
-        pO2 = default_microenvironment_options.Dirichlet_condition_vector[oxygen_i];
+        std::vector<double> TempPosition(3,0.0); TempPosition = pCell->position;
+        if (pCell->position[0] < default_microenvironment_options.X_range[0]) TempPosition[0] = default_microenvironment_options.X_range[0];
+        if (pCell->position[0] > default_microenvironment_options.X_range[1]) TempPosition[0] = default_microenvironment_options.X_range[1];
+        if (pCell->position[1] < default_microenvironment_options.Y_range[0]) TempPosition[1] = default_microenvironment_options.Y_range[0];
+        if (pCell->position[1] > default_microenvironment_options.Y_range[1]) TempPosition[1] = default_microenvironment_options.Y_range[1];
+        pO2 = (microenvironment.nearest_density_vector(TempPosition))[oxygen_i];
 	}
     else{
         pO2 = (pCell->nearest_density_vector())[oxygen_i];

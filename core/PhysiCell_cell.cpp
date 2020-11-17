@@ -687,7 +687,19 @@ void Cell::update_position( double dt )
 	// overwrite previous_velocity for future use 
 	// if(sqrt(dist(old_position, position))>3* phenotype.geometry.radius)
 		// std::cout<<sqrt(dist(old_position, position))<<"old_position: "<<old_position<<", new position: "<< position<<", velocity: "<<velocity<<", previous_velocity: "<< previous_velocity<<std::endl;
-	
+    
+    // Added by Heber
+    //#pragma omp critical
+    if(!get_container()->underlying_mesh.is_position_valid(position[0],position[1],position[2])){
+        //std::cout<<sqrt(dist(old_position, position))<<"old_position: "<<old_position<<", new position: "<< position<<", velocity: "<<velocity<<", previous_velocity: "<< previous_velocity;
+        if (position[1] <= default_microenvironment_options.Y_range[0] ){ position[1] = default_microenvironment_options.Y_range[0] + cell_defaults.phenotype.geometry.radius;} //return;}
+        if (position[1] >= default_microenvironment_options.Y_range[1] ){ position[1] = default_microenvironment_options.Y_range[1] - cell_defaults.phenotype.geometry.radius;} //return;}
+        if (position[2] <= default_microenvironment_options.Z_range[0] ){ position[2] = default_microenvironment_options.Z_range[0] + cell_defaults.phenotype.geometry.radius;} //return;}
+        if (position[2] >= default_microenvironment_options.Z_range[1] ){ position[2] = default_microenvironment_options.Z_range[1] - cell_defaults.phenotype.geometry.radius;} //return;}
+        velocity[0]=0; velocity[1]=0; velocity[2]=0;
+        //std::cout<<"  adj position: "<< position<<std::endl;
+    }
+    
 	previous_velocity = velocity; 
 	
 	velocity[0]=0; velocity[1]=0; velocity[2]=0;
@@ -699,11 +711,6 @@ void Cell::update_position( double dt )
 	}
 	else
 	{
-        // Add by Heber
-        if (position[1] <= default_microenvironment_options.Y_range[0] ){ position[1] = default_microenvironment_options.Y_range[0] + cell_defaults.phenotype.geometry.radius; return;}
-        if (position[1] >= default_microenvironment_options.Y_range[1] ){ position[1] = default_microenvironment_options.Y_range[1] - cell_defaults.phenotype.geometry.radius; return;}
-        if (position[2] <= default_microenvironment_options.Z_range[0] ){ position[2] = default_microenvironment_options.Z_range[0] + cell_defaults.phenotype.geometry.radius; return;}
-        if (position[2] >= default_microenvironment_options.Z_range[1] ){ position[2] = default_microenvironment_options.Z_range[1] - cell_defaults.phenotype.geometry.radius; return;}
 		updated_current_mechanics_voxel_index=-1;
 		
 		is_out_of_domain = true; 

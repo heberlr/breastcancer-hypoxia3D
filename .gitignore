@@ -7,3 +7,9 @@
 /output/*.png
 /output_*
 /__pycache*
+*.jpg
+*.png
+*.pov
+*.o
+*.exe
+*.avi
