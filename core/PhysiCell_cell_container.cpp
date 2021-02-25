@@ -228,7 +228,7 @@ void Cell_Container::update_all_cells(double t, double phenotype_dt_ , double me
 				(*all_cells)[i]->update_position(time_since_last_mechanics);
 			}
 		}
-		
+        
 		// When somebody reviews this code, let's add proper braces for clarity!!! 
 		
 		// Update cell indices in the container
@@ -297,6 +297,9 @@ void Cell_Container::update_all_cells(double t, double phenotype_dt_ , double me
 	}
 		
 	double time_since_last_mechanics= t- last_mechanics_time;
+    
+    //Added by Heber
+    //std::vector<int> CellsOut;
 	
 	// if( time_since_last_mechanics>= mechanics_dt || !initialzed)
 	if( fabs(time_since_last_mechanics - mechanics_dt_) < mechanics_dt_tolerance || !initialzed)
@@ -328,7 +331,8 @@ void Cell_Container::update_all_cells(double t, double phenotype_dt_ , double me
 			{
 				(*all_cells)[i]->functions.custom_cell_rule((*all_cells)[i], (*all_cells)[i]->phenotype, time_since_last_mechanics);
 			}
-		}
+		}       
+        
 		// Calculate new positions
 		#pragma omp parallel for 
 		for( int i=0; i < (*all_cells).size(); i++ )
@@ -337,8 +341,18 @@ void Cell_Container::update_all_cells(double t, double phenotype_dt_ , double me
 			{
 				(*all_cells)[i]->update_position(time_since_last_mechanics);
 			}
+            //Added by Heber
+            //if((*all_cells)[i]->is_out_of_domain)  CellsOut.push_back(i);
+            
 		}
 		
+        /* for( int i=0; i < (*all_cells).size(); i++ )
+		{
+            if ( (*all_cells)[i]->position[0] < default_microenvironment_options.X_range[0] || (*all_cells)[i]->position[0] > default_microenvironment_options.X_range[1] || (*all_cells)[i]->position[1] < default_microenvironment_options.Y_range[0] || (*all_cells)[i]->position[1] > default_microenvironment_options.Y_range[1] ){
+                if ((*all_cells)[i]->position[0] < default_microenvironment_options.X_range[0]){ std::cout << "PhysiCell_Container -- Position: " << (*all_cells)[i]->position << " ISOUT: " << (*all_cells)[i]->is_out_of_domain << std::endl; }
+            }
+		} */
+        
 		// When somebody reviews this code, let's add proper braces for clarity!!! 
 		
 		// Update cell indices in the container
@@ -348,6 +362,22 @@ void Cell_Container::update_all_cells(double t, double phenotype_dt_ , double me
 		last_mechanics_time=t;
 	}
 	
+    //Added by Heber
+    /* sort(CellsOut.begin(),CellsOut.end());
+    int PrevIndex = CellsOut[CellsOut.size()-2];
+    delete_cell(PrevIndex);
+    for( int i=CellsOut.size()-2; i >= 0; i-- ){  
+        if (CellsOut[i] != PrevIndex) delete_cell(CellsOut[i]);
+        PrevIndex = CellsOut[i];
+    }    */
+
+    //Added by Heber
+    /* std::vector<int> CellsOut;
+    for( int i=(*all_cells).size()-1; i >=0; i-- ) 
+        if ((*all_cells)[i]->is_out_of_domain) CellsOut.push_back(i);
+    for( int i=0; i < CellsOut.size(); i++ )
+        delete_cell(CellsOut[i]); */
+        
 	initialzed=true;
 	return;
 }

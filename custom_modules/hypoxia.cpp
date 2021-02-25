@@ -159,7 +159,44 @@ void setup_microenvironment( void )
 	return; 
 }	
 
-std::vector<std::vector<double>> create_cell_positions(double cell_radius, double tumor_radius)
+
+std::vector<std::vector<double>> create_cell_positions(double cell_radius, double sphere_radius)
+{
+	std::vector<std::vector<double>> cells;
+	int xc=0,yc=0,zc=0;
+	double x_spacing= cell_radius*sqrt(3);
+	double y_spacing= cell_radius*2;
+	double z_spacing= cell_radius*sqrt(3);
+	
+	std::vector<double> tempPoint(3,0.0);
+    
+    double max_Xvalue = parameters.doubles["Max_Xvalue"].value;
+    //double xI=default_microenvironment_options.X_range[0],yI=default_microenvironment_options.Y_range[0],zI=default_microenvironment_options.Z_range[0];
+    double xI=default_microenvironment_options.X_range[0]+200,yI=default_microenvironment_options.Y_range[0],zI=default_microenvironment_options.Z_range[0];
+	double xF=default_microenvironment_options.X_range[0]+max_Xvalue,yF=default_microenvironment_options.Y_range[1],zF=default_microenvironment_options.Z_range[1];
+    std::vector<double> Center = {default_microenvironment_options.X_range[0]-(sphere_radius-max_Xvalue), 0.5*(default_microenvironment_options.Y_range[0]+default_microenvironment_options.Y_range[1]), 0.5*(default_microenvironment_options.Z_range[0]+default_microenvironment_options.Z_range[1])};
+	
+	for(double z=zI;z<zF;z+=z_spacing, zc++)
+	{
+		for(double x=xI;x<xF;x+=x_spacing, xc++)
+		{
+			for(double y=yI;y<yF;y+=y_spacing, yc++)
+			{
+				tempPoint[0]=x + (zc%2) * 0.5 * cell_radius;
+				tempPoint[1]=y + (xc%2) * cell_radius;
+				tempPoint[2]=z;
+				
+				if( dist(Center,tempPoint) < sphere_radius )
+				{ cells.push_back(tempPoint); }
+			}
+			
+		}
+	}
+	return cells;
+	
+}
+
+/* std::vector<std::vector<double>> create_cell_positions(double cell_radius, double tumor_radius)
 {
     double max_Xvalue = parameters.doubles["Max_Xvalue"].value;
 	std::vector<std::vector<double>> cells;
@@ -190,7 +227,7 @@ std::vector<std::vector<double>> create_cell_positions(double cell_radius, doubl
 	}
 	return cells;	
 }
-
+ */
 void setup_tissue( void )
 {
 	static int genes_i = 0; 
@@ -390,12 +427,14 @@ std::vector<std::string> AMIGOS_coloring_function( Cell* pCell )
 	// oxygen;
     static int oxygen_i = get_default_microenvironment()->find_density_index( "oxygen" ); 
     double pO2;
-    if ( pCell->position[0] < default_microenvironment_options.X_range[0] || pCell->position[0] > default_microenvironment_options.X_range[1] || pCell->position[1] < default_microenvironment_options.Y_range[0] || pCell->position[1] > default_microenvironment_options.Y_range[1] ){ // outside of domain or in boundary
+    if ( pCell->position[0] < default_microenvironment_options.X_range[0] || pCell->position[0] > default_microenvironment_options.X_range[1] || pCell->position[1] < default_microenvironment_options.Y_range[0] || pCell->position[1] > default_microenvironment_options.Y_range[1] || pCell->position[2] < default_microenvironment_options.Z_range[0] || pCell->position[2] > default_microenvironment_options.Z_range[1] ){ // outside of domain or in boundary
         std::vector<double> TempPosition(3,0.0); TempPosition = pCell->position;
         if (pCell->position[0] < default_microenvironment_options.X_range[0]) TempPosition[0] = default_microenvironment_options.X_range[0];
         if (pCell->position[0] > default_microenvironment_options.X_range[1]) TempPosition[0] = default_microenvironment_options.X_range[1];
         if (pCell->position[1] < default_microenvironment_options.Y_range[0]) TempPosition[1] = default_microenvironment_options.Y_range[0];
         if (pCell->position[1] > default_microenvironment_options.Y_range[1]) TempPosition[1] = default_microenvironment_options.Y_range[1];
+        if (pCell->position[2] < default_microenvironment_options.Z_range[0]) TempPosition[2] = default_microenvironment_options.Z_range[0];
+        if (pCell->position[2] > default_microenvironment_options.Z_range[1]) TempPosition[2] = default_microenvironment_options.Z_range[1];
         pO2 = (microenvironment.nearest_density_vector(TempPosition))[oxygen_i];
 	}
     else{

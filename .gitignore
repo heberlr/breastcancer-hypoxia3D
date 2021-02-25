@@ -10,6 +10,5 @@
 *.jpg
 *.png
 *.pov
-*.o
-*.exe
 *.avi
+*.txt

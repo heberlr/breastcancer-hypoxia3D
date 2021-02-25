@@ -492,7 +492,9 @@ void SVG_plot( std::string filename , Microenvironment& M, double z_slice , doub
 	os << "  <g id=\"cells\">" << std::endl; 
 	for( int i=0 ; i < total_cell_count ; i++ )
 	{
-		Cell* pC = (*all_cells)[i]; // global_cell_list[i]; 
+		Cell* pC = (*all_cells)[i]; // global_cell_list[i];
+        //Added by Heber
+        if (pC->is_out_of_domain) continue;
   
 		static std::vector<std::string> Colors; 
 		if( fabs( (pC->position)[2] - z_slice ) < pC->phenotype.geometry.radius )

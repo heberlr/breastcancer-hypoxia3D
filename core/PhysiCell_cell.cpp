@@ -689,9 +689,8 @@ void Cell::update_position( double dt )
 		// std::cout<<sqrt(dist(old_position, position))<<"old_position: "<<old_position<<", new position: "<< position<<", velocity: "<<velocity<<", previous_velocity: "<< previous_velocity<<std::endl;
     
     // Added by Heber
-    //#pragma omp critical
     if(!get_container()->underlying_mesh.is_position_valid(position[0],position[1],position[2])){
-        //std::cout<<sqrt(dist(old_position, position))<<"old_position: "<<old_position<<", new position: "<< position<<", velocity: "<<velocity<<", previous_velocity: "<< previous_velocity;
+        //std::cout<<" CellID: "<<ID <<", old_position: "<<old_position<<", new position: "<< position<<", velocity: "<<velocity<<", previous_velocity: "<< previous_velocity;
         if (position[1] <= default_microenvironment_options.Y_range[0] ){ position[1] = default_microenvironment_options.Y_range[0] + cell_defaults.phenotype.geometry.radius;} //return;}
         if (position[1] >= default_microenvironment_options.Y_range[1] ){ position[1] = default_microenvironment_options.Y_range[1] - cell_defaults.phenotype.geometry.radius;} //return;}
         if (position[2] <= default_microenvironment_options.Z_range[0] ){ position[2] = default_microenvironment_options.Z_range[0] + cell_defaults.phenotype.geometry.radius;} //return;}
@@ -731,7 +730,7 @@ void Cell::update_voxel_in_container()
 	update_voxel_index();
 	// int temp_current_voxel_index;
 	// Check to see if we need to remove agents that are pushed out of boundary
-	// if(!get_container()->underlying_mesh.is_position_valid(position[0],position[1],position[2]))	
+	// if(!get_container()->underlying_mesh.is_position_valid(position[0],position[1],position[2]))
 		
 	if(updated_current_mechanics_voxel_index==-1)// updated_current_mechanics_voxel_index is updated in update_position
 	{
@@ -747,7 +746,7 @@ void Cell::update_voxel_in_container()
 		current_mechanics_voxel_index=-1;
 		is_out_of_domain=true;
 		is_active=false;
-		return;
+       	return;
 	}
 	
 	// temp_current_voxel_index= get_current_mechanics_voxel_index();
